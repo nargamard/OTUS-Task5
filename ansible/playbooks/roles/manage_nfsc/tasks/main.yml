@@ -1,0 +1,44 @@
+---
+# Установим nfs-utils
+- name: Install the latest version of nfs-utils 
+  ansible.builtin.yum:
+    name: nfs-utils 
+    state: latest
+
+# Включим firewall
+- name: Make sure a firewalld unit is running
+  ansible.builtin.systemd_service:
+    name: firewalld
+    state: started
+    enabled: true
+
+# Добавим в /etc/fstab строку для подключения директории nfs
+- name: Add a line in /etc/fstab
+  lineinfile:
+    path: /etc/fstab 
+    line: 192.168.56.10:/srv/share/ /mnt nfs vers=3,proto=udp,noauto,x-systemd.automount 0 0
+
+# Перечитаем демоны
+- name: Just force systemd to reread configs (2.4 and above)
+  systemd_service:
+    daemon_reload: true
+
+# Генерируем remote-fs юнит 
+- name: configuring firewall
+  shell: systemctl restart remote-fs.target 
+
+# Обращаемся к каталогу /mnt
+- name: cd mnt
+  shell: cd /mnt
+
+# Проверяем, что /mnt примонтирован
+- name: test mount /mnt
+  shell: echo -e "\n\n Проверяем, что /mnt примонтирован (mount | grep mnt ) \n" > /tmp/logfile_nfsc && mount | grep mnt  >> /tmp/logfile_nfsc
+
+# Получим лог-файл с vagrant-ВМ
+- name: fetch logfile
+  fetch:
+    src: /tmp/logfile_nfsc
+    dest: ../logfile_nfsc
+
+

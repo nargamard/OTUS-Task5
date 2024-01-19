@@ -1,0 +1,46 @@
+
+
+ Проверим с клиента наличие файла на сервере (ls -la /mnt/upload) 
+
+total 0
+drwxrwxrwx. 2 nfsnobody nfsnobody 24 Jan 19 20:37 .
+drwxrwxrwx. 3 nfsnobody nfsnobody 20 Jan 19 20:36 ..
+-rw-r--r--. 1 root      root       0 Jan 19 20:37 check_file
+
+
+ Проверим с клиента наличие файла на сервере (ls -la /mnt/upload) 
+
+total 0
+drwxrwxrwx. 2 nfsnobody nfsnobody 43 Jan 19 20:37 .
+drwxrwxrwx. 3 nfsnobody nfsnobody 20 Jan 19 20:36 ..
+-rw-r--r--. 1 root      root       0 Jan 19 20:37 check_file
+-rw-r--r--. 1 nfsnobody nfsnobody  0 Jan 19 20:37 client_file
+
+
+ Проверяем статус RPC (showmount -a 192.168.56.10) 
+
+All mount points on 192.168.56.10:
+
+
+ Проверяем статус RPC (mount | grep mnt) 
+
+systemd-1 on /mnt type autofs (rw,relatime,fd=36,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=11734)
+
+
+ Проверим с клиента наличие файла на сервере (ls -la /mnt/upload) 
+
+total 0
+drwxrwxrwx. 2 nfsnobody nfsnobody 43 Jan 19 20:37 .
+drwxrwxrwx. 3 nfsnobody nfsnobody 20 Jan 19 20:36 ..
+-rw-r--r--. 1 root      root       0 Jan 19 20:37 check_file
+-rw-r--r--. 1 nfsnobody nfsnobody  0 Jan 19 20:37 client_file
+
+
+ Проверим с клиента наличие файла на сервере (ls -la /mnt/upload) 
+
+total 0
+drwxrwxrwx. 2 nfsnobody nfsnobody 62 Jan 19 20:41 .
+drwxrwxrwx. 3 nfsnobody nfsnobody 20 Jan 19 20:36 ..
+-rw-r--r--. 1 root      root       0 Jan 19 20:37 check_file
+-rw-r--r--. 1 nfsnobody nfsnobody  0 Jan 19 20:37 client_file
+-rw-r--r--. 1 nfsnobody nfsnobody  0 Jan 19 20:41 final_check

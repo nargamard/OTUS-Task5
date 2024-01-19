@@ -1,0 +1,51 @@
+
+
+ Проверим с клиента наличие файла на сервере (ls -la /srv/share/upload/) 
+
+total 0
+drwxrwxrwx. 2 nfsnobody nfsnobody 43 Jan 19 20:37 .
+drwxrwxrwx. 3 nfsnobody nfsnobody 20 Jan 19 20:36 ..
+-rw-r--r--. 1 root      root       0 Jan 19 20:37 check_file
+-rw-r--r--. 1 nfsnobody nfsnobody  0 Jan 19 20:37 client_file
+
+
+ Проверяем статус сервера NFS  (systemctl status nfs) 
+
+● nfs-server.service - NFS server and services
+   Loaded: loaded (/usr/lib/systemd/system/nfs-server.service; enabled; vendor preset: disabled)
+  Drop-In: /run/systemd/generator/nfs-server.service.d
+           └─order-with-mounts.conf
+   Active: active (exited) since Fri 2024-01-19 20:39:01 UTC; 1min 9s ago
+  Process: 1018 ExecStartPost=/bin/sh -c if systemctl -q is-active gssproxy; then systemctl reload gssproxy ; fi (code=exited, status=0/SUCCESS)
+  Process: 992 ExecStart=/usr/sbin/rpc.nfsd $RPCNFSDARGS (code=exited, status=0/SUCCESS)
+  Process: 990 ExecStartPre=/usr/sbin/exportfs -r (code=exited, status=0/SUCCESS)
+ Main PID: 992 (code=exited, status=0/SUCCESS)
+   CGroup: /system.slice/nfs-server.service
+
+Jan 19 20:39:01 nfss systemd[1]: Starting NFS server and services...
+Jan 19 20:39:01 nfss systemd[1]: Started NFS server and services.
+
+
+ Проверяем статус firewall (systemctl status firewalld) 
+
+● firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
+   Active: active (running) since Fri 2024-01-19 20:38:57 UTC; 1min 13s ago
+     Docs: man:firewalld(1)
+ Main PID: 570 (firewalld)
+   CGroup: /system.slice/firewalld.service
+           └─570 /usr/bin/python -Es /usr/sbin/firewalld --nofork --nopid
+
+Jan 19 20:38:56 nfss systemd[1]: Starting firewalld - dynamic firewall daemon...
+Jan 19 20:38:57 nfss systemd[1]: Started firewalld - dynamic firewall daemon.
+
+
+ Проверяем статус exportfs (exportfs -s) 
+
+/srv/share  192.168.56.11/32(sync,wdelay,hide,no_subtree_check,sec=sys,rw,secure,root_squash,no_all_squash)
+
+
+ Проверяем статус RPC (showmount -a 192.168.56.10) 
+
+All mount points on 192.168.56.10:
+192.168.56.11:/srv/share

@@ -1,0 +1,9 @@
+[servers]
+centos_nfss
+[servers:vars]
+ansible_host=192.168.56.10
+
+[clients]
+centos_nfsc
+[clients:vars]
+ansible_host=192.168.56.11

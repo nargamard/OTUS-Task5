@@ -1,0 +1,40 @@
+
+
+ Посмотрим прослушиваемые порты (ss -tnplu) 
+
+Netid  State      Recv-Q Send-Q Local Address:Port               Peer Address:Port              
+udp    UNCONN     0      0         *:732                   *:*                   users:(("rpcbind",pid=566,fd=7))
+udp    UNCONN     0      0      127.0.0.1:755                   *:*                   users:(("rpc.statd",pid=4394,fd=7))
+udp    UNCONN     0      0         *:2049                  *:*                  
+udp    UNCONN     0      0      127.0.0.1:323                   *:*                   users:(("chronyd",pid=568,fd=1))
+udp    UNCONN     0      0         *:68                    *:*                   users:(("dhclient",pid=2635,fd=6))
+udp    UNCONN     0      0         *:20048                 *:*                   users:(("rpc.mountd",pid=4398,fd=7))
+udp    UNCONN     0      0         *:46185                 *:*                   users:(("rpc.statd",pid=4394,fd=8))
+udp    UNCONN     0      0         *:111                   *:*                   users:(("rpcbind",pid=566,fd=6))
+udp    UNCONN     0      0         *:44236                 *:*                  
+udp    UNCONN     0      0        :::732                  :::*                   users:(("rpcbind",pid=566,fd=10))
+udp    UNCONN     0      0        :::2049                 :::*                  
+udp    UNCONN     0      0        :::43786                :::*                   users:(("rpc.statd",pid=4394,fd=10))
+udp    UNCONN     0      0       ::1:323                  :::*                   users:(("chronyd",pid=568,fd=2))
+udp    UNCONN     0      0        :::20048                :::*                   users:(("rpc.mountd",pid=4398,fd=9))
+udp    UNCONN     0      0        :::49505                :::*                  
+udp    UNCONN     0      0        :::111                  :::*                   users:(("rpcbind",pid=566,fd=9))
+tcp    LISTEN     0      64        *:2049                  *:*                  
+tcp    LISTEN     0      128       *:56846                 *:*                   users:(("rpc.statd",pid=4394,fd=9))
+tcp    LISTEN     0      128       *:111                   *:*                   users:(("rpcbind",pid=566,fd=8))
+tcp    LISTEN     0      64        *:45264                 *:*                  
+tcp    LISTEN     0      128       *:20048                 *:*                   users:(("rpc.mountd",pid=4398,fd=8))
+tcp    LISTEN     0      128       *:22                    *:*                   users:(("sshd",pid=884,fd=3))
+tcp    LISTEN     0      100    127.0.0.1:25                    *:*                   users:(("master",pid=1100,fd=13))
+tcp    LISTEN     0      64       :::2049                 :::*                  
+tcp    LISTEN     0      128      :::58988                :::*                   users:(("rpc.statd",pid=4394,fd=11))
+tcp    LISTEN     0      64       :::43662                :::*                  
+tcp    LISTEN     0      128      :::111                  :::*                   users:(("rpcbind",pid=566,fd=11))
+tcp    LISTEN     0      128      :::20048                :::*                   users:(("rpc.mountd",pid=4398,fd=10))
+tcp    LISTEN     0      128      :::22                   :::*                   users:(("sshd",pid=884,fd=4))
+tcp    LISTEN     0      100     ::1:25                   :::*                   users:(("master",pid=1100,fd=14))
+
+
+ Посмотрим экспортированные директории (exportfs -s) 
+
+/srv/share  192.168.56.11/32(sync,wdelay,hide,no_subtree_check,sec=sys,rw,secure,root_squash,no_all_squash)

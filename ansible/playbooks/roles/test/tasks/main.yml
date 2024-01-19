@@ -1,0 +1,127 @@
+---
+# СОздадим файл на сервере
+- name: Touch a file
+  file:
+    path: /srv/share/upload/check_file
+    state: touch
+    mode: u=rw,g=r,o=r
+  when: inventory_hostname in groups['servers']
+      
+# С клиента создадим файл на сервере
+- name: Check a file
+  shell: echo -e "\n\n Проверим с клиента наличие файла на сервере (ls -la /mnt/upload) \n" > /tmp/logfile_test_client && ls -la /mnt/upload >> /tmp/logfile_test_client
+  when: inventory_hostname in groups['clients']
+      
+# Создадим файл на сервере
+- name: Touch a file
+  file:
+    path: /mnt/upload/client_file
+    state: touch
+    mode: u=rw,g=r,o=r
+  when: inventory_hostname in groups['clients']
+
+# Перезагружаем клиент
+- name: restart client
+  reboot:
+  when: inventory_hostname in groups['clients']
+
+# Ждём, пока клиент перезагрузится
+- name: Sleep for 60 seconds and continue with play
+  wait_for:
+    timeout: 60
+  delegate_to: localhost
+
+# С клиента проверяем наличие файлов в nfs-папке
+- name: Check a file
+  shell: echo -e "\n\n Проверим с клиента наличие файла на сервере (ls -la /mnt/upload) \n" >> /tmp/logfile_test_client && ls -la /mnt/upload >> /tmp/logfile_test_client
+  when: inventory_hostname in groups['clients']
+
+# Перезагружаем сервер
+- name: restart server
+  reboot:
+  when: inventory_hostname in groups['servers']
+
+# Ждём, пока клиент перезагрузится
+- name: Sleep for 60 seconds and continue with play
+  wait_for:
+    timeout: 60
+  delegate_to: localhost
+
+# Проверяем наличие файлов в nfs-папке
+- name: Check a file
+  shell: echo -e "\n\n Проверим с клиента наличие файла на сервере (ls -la /srv/share/upload/) \n" >> /tmp/logfile_test_server && ls -la /srv/share/upload/ >> /tmp/logfile_test_server
+  when: inventory_hostname in groups['servers']
+
+# Проверяем статус сервера NFS `systemctl status nfs`
+- name: Check a # Проверяем статус сервера NFS `systemctl status nfs`
+
+  shell: echo -e "\n\n Проверяем статус сервера NFS  (systemctl status nfs) \n" >> /tmp/logfile_test_server && systemctl status nfs >> /tmp/logfile_test_server
+  when: inventory_hostname in groups['servers']
+
+# Проверяем статус firewall `systemctl status firewalld`
+- name: Check a firewalld
+  shell: echo -e "\n\n Проверяем статус firewall (systemctl status firewalld) \n" >> /tmp/logfile_test_server && systemctl status firewalld >> /tmp/logfile_test_server
+  when: inventory_hostname in groups['servers']
+
+# Проверяем экспорты `exportfs -s`
+- name: Check a exportfs
+  shell: echo -e "\n\n Проверяем статус exportfs (exportfs -s) \n" >> /tmp/logfile_test_server && exportfs -s >> /tmp/logfile_test_server
+  when: inventory_hostname in groups['servers']
+
+# Проверяем работу RPC `showmount -a 192.168.56.10`
+- name: Check a RPC
+  shell: echo -e "\n\n Проверяем статус RPC (showmount -a 192.168.56.10) \n" >> /tmp/logfile_test_server && showmount -a 192.168.56.10 >> /tmp/logfile_test_server
+  when: inventory_hostname in groups['servers']
+
+# Перезагружаем клиент
+- name: restart client
+  reboot:
+  when: inventory_hostname in groups['clients']
+
+# Ждём, пока клиент перезагрузится
+- name: Sleep for 60 seconds and continue with play
+  wait_for:
+    timeout: 60
+  delegate_to: localhost
+
+# Проверяем работу RPC `showmount -a 192.168.56.10`
+- name: Check a RPC
+  shell: echo -e "\n\n Проверяем статус RPC (showmount -a 192.168.56.10) \n" >> /tmp/logfile_test_client && showmount -a 192.168.56.10 >> /tmp/logfile_test_client
+  when: inventory_hostname in groups['clients']
+
+# Проверяем статус монтирования `mount | grep mnt`
+- name: Check a mount status
+  shell: echo -e "\n\n Проверяем статус RPC (mount | grep mnt) \n" >> /tmp/logfile_test_client && mount | grep mnt >> /tmp/logfile_test_client
+  when: inventory_hostname in groups['clients']
+
+# С клиента проверяем наличие файлов в nfs-папке
+- name: Check a file
+  shell: echo -e "\n\n Проверим с клиента наличие файла на сервере (ls -la /mnt/upload) \n" >> /tmp/logfile_test_client && ls -la /mnt/upload >> /tmp/logfile_test_client
+  when: inventory_hostname in groups['clients']
+
+# Создадим файл на сервере
+- name: Touch a file
+  file:
+    path: /mnt/upload/final_check
+    state: touch
+    mode: u=rw,g=r,o=r
+  when: inventory_hostname in groups['clients']
+
+# С клиента проверяем наличие файлов в nfs-папке
+- name: Check a file
+  shell: echo -e "\n\n Проверим с клиента наличие файла на сервере (ls -la /mnt/upload) \n" >> /tmp/logfile_test_client && ls -la /mnt/upload >> /tmp/logfile_test_client
+  when: inventory_hostname in groups['clients']
+
+# Получим лог-файл с vagrant-ВМ
+- name: fetch logfile
+  fetch:
+    src: /tmp/logfile_test_client
+    dest: ../logfile_test_client
+  when: inventory_hostname in groups['clients']
+
+  # Получим лог-файл с vagrant-ВМ
+- name: fetch logfile
+  fetch:
+    src: /tmp/logfile_test_server
+    dest: ../logfile_test_server
+  when: inventory_hostname in groups['servers']

@@ -1,0 +1,58 @@
+---
+# Установим nfs-utils
+- name: Install the latest version of nfs-utils 
+  ansible.builtin.yum:
+    name: nfs-utils 
+    state: latest
+
+# Включим firewall
+- name: Make sure a firewalld unit is running
+  ansible.builtin.systemd_service:
+    name: firewalld
+    state: started
+    enabled: true
+
+# Разрешаем в firewall доступ к сервисам NFS 
+- name: configuring firewall
+  shell: firewall-cmd --add-service="nfs3" --add-service="rpc-bind" --add-service="mountd" --permanent && firewall-cmd --reload
+
+# Включим NFS сервер
+- name: Make sure a firewalld unit is running
+  ansible.builtin.systemd_service:
+    name: nfs
+    state: started
+    enabled: true
+
+# Посмотрим прослушиваемые порты
+- name: Get file ratio info
+  shell: echo -e "\n\n Посмотрим прослушиваемые порты (ss -tnplu) \n" > /tmp/logfile_nfss && ss -tnplu >> /tmp/logfile_nfss
+
+# Создадим и настроим директорию, которая будет экспортирована в будущем 
+- name: Create directory
+  ansible.builtin.file:
+    path: /srv/share/upload 
+    state: directory
+    owner: nfsnobody
+    group: nfsnobody
+    mode: '0777'
+
+# Добавим в /etc/exports строки, которая позволит экспортировать /srv/share/upload 
+- name: Add a line in /etc/exports
+  lineinfile:
+    path: /etc/exports 
+    line: /srv/share 192.168.56.11/32(rw,sync,root_squash)
+    create: yes
+
+# Экспортируем директорию /srv/share/upload 
+- name: Exporting /srv/share/upload 
+  shell: exportfs -r 
+
+# Смотрим результат
+- name: See exportfs -s
+  shell: echo -e "\n\n Посмотрим экспортированные директории (exportfs -s) \n" >> /tmp/logfile_nfss && exportfs -s >> /tmp/logfile_nfss
+
+# Получим лог-файл с vagrant-ВМ
+- name: fetch logfile
+  fetch:
+    src: /tmp/logfile_nfss
+    dest: ../logfile_nfss
